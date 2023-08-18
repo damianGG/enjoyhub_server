@@ -24,6 +24,12 @@ export class User {
   @Column({ type: 'varchar', length: 128 })
   password: string;
 
+  @Column({ default: false })
+  emailVerified: boolean;
+
+  @Column({ nullable: true })
+  emailVerificationToken: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -9,12 +9,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly mailService: MailService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -31,6 +34,13 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+    return user;
+  }
+
+  public async findByVerificationToken(token: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { emailVerificationToken: token },
+    });
     return user;
   }
 
@@ -64,12 +74,18 @@ export class UsersService {
     // Hashowanie hasła przed zapisaniem do bazy danych
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
+    //Tworzenie nowego uuid do weryfikacji adresu email
+    const _emailVerificationToken = uuidv4();
     // Tworzenie nowego użytkownika i zapisanie go w bazie danych
     const user = this.userRepository.create({
       ...createUserDto,
       password: hashedPassword,
+      emailVerificationToken: _emailVerificationToken,
     });
-
+    await this.mailService.sendVerificationEmail(
+      user.email,
+      user.emailVerificationToken,
+    );
     return await this.userRepository.save(user);
   }
 }
