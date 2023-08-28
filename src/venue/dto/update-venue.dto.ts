@@ -30,4 +30,7 @@ export class UpdateVenueDto extends PartialType(CreateVenueDto) {
 
   @IsOptional()
   userId?: string;
+
+  @IsOptional()
+  categoryId?: number;
 }

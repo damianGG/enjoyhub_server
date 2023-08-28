@@ -12,7 +12,7 @@ import {
 import { VenueService } from './venue.service';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-//import { UpdateVenueDto } from './dto/update-venue.dto';
+import { Venue } from './entities/venue.entity';
 
 @Controller('venue')
 export class VenueController {
@@ -31,15 +31,21 @@ export class VenueController {
     return this.venueService.findAll();
   }
 
+  @Get('/category/:categorySlug')
+  async findByCategory(
+    @Param('categorySlug') categorySlug: string,
+  ): Promise<Venue[]> {
+    return this.venueService.findByCategorySlug(categorySlug);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.venueService.findOne(id);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateVenueDto: UpdateVenueDto) {
-  //   return this.venueService.update(id, updateVenueDto);
-  // }
+  @Get(':id/photos')
+  getPhotosByVenue(@Param('id') id: string) {
+    return this.venueService.getPhotosByVenue(id);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

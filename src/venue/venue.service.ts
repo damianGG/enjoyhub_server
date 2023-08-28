@@ -5,6 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Venue } from './entities/venue.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { CreatePhotoDTO } from './dto/create-photo.dto';
+import { Photo } from './entities/photo.entity';
+
 @Injectable()
 export class VenueService {
   venueCategoryRepository: any;
@@ -12,6 +15,8 @@ export class VenueService {
   constructor(
     @InjectRepository(Venue)
     private venueRepository: Repository<Venue>,
+    @InjectRepository(Photo)
+    private photoRepository: Repository<Photo>,
   ) {}
 
   async create(createVenueDto: CreateVenueDto, user: User): Promise<Venue> {
@@ -42,40 +47,35 @@ export class VenueService {
     return venue;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // async update(id: string, updateVenueDto: UpdateVenueDto): Promise<Venue> {
-  //   const venue = await this.venueRepository.findOne({
-  //     where: { id: id },
-  //     relations: {
-  //       venueCategory: true,
-  //     },
-  //   });
-
-  //   if (
-  //     updateVenueDto.venueCategoryId &&
-  //     updateVenueDto.venueCategoryId.length > 0
-  //   ) {
-  //     console.log(updateVenueDto.venueCategoryId);
-  //     const venueCategory = await this.venueCategoryRepository.findOne(
-  //       updateVenueDto.venueCategoryId,
-  //     );
-  //     if (
-  //       !venueCategory ||
-  //       venueCategory.length !== updateVenueDto.venueCategoryId.length
-  //     ) {
-  //       throw new NotFoundException(`Some VenueCategories not found`);
-  //     }
-  //     venue.venueCategory = venueCategory;
-  //   }
-
-  //   // const venue = venues[0];
-  //   // const updatedVenue = Object.assign(venue, updateVenueDto);
-
-  //   return await this.venueRepository.save(updateVenueDto);
-  // }
-
   async remove(id: string): Promise<void> {
     const venue = await this.findOne(id); // this will throw an error if the venue is not found
     await this.venueRepository.remove(venue);
+  }
+
+  async findByCategorySlug(slug: string) {
+    return this.venueRepository
+      .createQueryBuilder('venue')
+      .innerJoin('venue.category', 'category')
+      .where('category.slug = :slug', { slug })
+      .getMany();
+  }
+
+  async addPhoto(dto: CreatePhotoDTO) {
+    const photo = new Photo();
+    photo.url = dto.url;
+
+    const venue = await this.venueRepository.findOneBy({ id: dto.venueId });
+    if (!venue) throw new NotFoundException('Venue not found');
+
+    photo.venue = venue;
+
+    return await this.photoRepository.save(photo);
+  }
+
+  async getPhotosByVenue(venueId: string) {
+    return await this.photoRepository
+      .createQueryBuilder('photo')
+      .where('photo.venueId = :venueId', { venueId })
+      .getMany();
   }
 }

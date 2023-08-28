@@ -6,8 +6,10 @@ import {
   PrimaryColumn,
   Generated,
   ManyToOne,
-  //JoinTable,
+  OneToMany,
 } from 'typeorm';
+import { Category } from './category.entity';
+import { Photo } from './photo.entity';
 
 @Entity()
 export class Venue {
@@ -35,4 +37,10 @@ export class Venue {
 
   @ManyToOne(() => User, (user) => user.venues)
   user: User;
+
+  @ManyToOne(() => Category, (category) => category.venue)
+  category: Category;
+
+  @OneToMany(() => Photo, (photo) => photo.venue)
+  photos: Photo[];
 }
