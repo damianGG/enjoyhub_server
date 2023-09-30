@@ -1,4 +1,4 @@
 export class CreatePhotoDTO {
   url: string;
-  venueId: string;
+  venueId: number;
 }

@@ -39,7 +39,7 @@ export class VenueService {
     return await this.venueRepository.find();
   }
 
-  async findOne(id: string): Promise<Venue> {
+  async findOne(id: number): Promise<Venue> {
     const venue = await this.venueRepository.findOne({ where: { id } });
     if (!venue) {
       throw new NotFoundException(`Venue with ID ${id} not found`);
@@ -47,7 +47,7 @@ export class VenueService {
     return venue;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const venue = await this.findOne(id); // this will throw an error if the venue is not found
     await this.venueRepository.remove(venue);
   }
@@ -56,8 +56,18 @@ export class VenueService {
     return this.venueRepository
       .createQueryBuilder('venue')
       .innerJoin('venue.category', 'category')
+      .leftJoinAndSelect('venue.photos', 'photo')
       .where('category.slug = :slug', { slug })
       .getMany();
+  }
+
+  async findByIdInSlug(slug: string): Promise<Venue> {
+    const id = parseInt(slug.split('-')[0]);
+    const venue = await this.venueRepository.findOne({ where: { id } });
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${id} not found`);
+    }
+    return venue;
   }
 
   async addPhoto(dto: CreatePhotoDTO) {

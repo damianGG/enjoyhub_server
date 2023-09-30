@@ -39,7 +39,7 @@ export class VenueController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.venueService.findOne(id);
   }
   @Get(':id/photos')
@@ -48,7 +48,7 @@ export class VenueController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.venueService.remove(id);
   }
 }

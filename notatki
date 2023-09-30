@@ -1,0 +1,12 @@
+Stan:
+Po przeslaniu pliku zapisuje go do bazy czyli do cloudinary  oraz link loduje w bazie danych 
+
+Trzeba zrobic:
+Dodać funkcjonalność która zapisze również venueID dla danego zdjęcia  
+-dodać kolumne do photos isVisiable - po to aby dac możliwość uztykownikowi "usunięcia zdjęć" - będziemy zmieniać tylko flagę z 1 na 0 
+defultowo ma być 1 
+
+upgrade możliwości zapisania kilku zdjęć
+
+    background-image: url(/widoki/img/bgd_oplaty.png);
+    background-color: red;

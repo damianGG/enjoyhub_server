@@ -3,19 +3,21 @@ import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
   Column,
-  PrimaryColumn,
-  Generated,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Category } from './category.entity';
 import { Photo } from './photo.entity';
 
 @Entity()
 export class Venue {
-  @PrimaryColumn({ type: 'char', length: 36 })
-  @Generated('uuid')
-  id: string;
+  // @PrimaryColumn({ type: 'char', length: 36 })
+  // @Generated('uuid')
+  // id: string;
+
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column({ default: 'Default Venue Name' })
   name: string;

@@ -6,15 +6,22 @@ import {
   Get,
   Param,
   Res,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { Response } from 'express';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
@@ -39,5 +46,12 @@ export class AppController {
     } else {
       res.redirect('/verification-failed');
     }
+  }
+  @Post('image/upload')
+  @UseInterceptors(FilesInterceptor('files'))
+  uploadImages(@UploadedFiles() files: Express.Multer.File[]) {
+    return Promise.all(
+      files.map((file) => this.cloudinaryService.uploadFile(file)),
+    );
   }
 }
