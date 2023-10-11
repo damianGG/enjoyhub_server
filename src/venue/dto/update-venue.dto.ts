@@ -33,4 +33,10 @@ export class UpdateVenueDto extends PartialType(CreateVenueDto) {
 
   @IsOptional()
   categoryId?: number;
+
+  @IsOptional()
+  latitude?: number;
+
+  @IsOptional()
+  longitude?: number;
 }

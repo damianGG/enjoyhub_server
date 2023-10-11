@@ -28,4 +28,12 @@ export class CreateVenueDto {
 
   @IsOptional()
   userId?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  latitude: number;
+
+  @IsNotEmpty()
+  @IsString()
+  longitude: number;
 }
