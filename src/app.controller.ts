@@ -8,6 +8,7 @@ import {
   Res,
   UseInterceptors,
   UploadedFiles,
+  Req,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -46,6 +47,11 @@ export class AppController {
     } else {
       res.redirect('/verification-failed');
     }
+  }
+  @Get('verify-token')
+  verifyToken(@Req() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    return this.authService.verifyToken(token);
   }
   @Post('image/upload')
   @UseInterceptors(FilesInterceptor('files'))

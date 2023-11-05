@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 
@@ -16,5 +16,11 @@ export class AuthController {
     } else {
       res.redirect('/verification-failed');
     }
+  }
+
+  @Get('verify-token')
+  verifyToken(@Req() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    return this.authService.verifyToken(token);
   }
 }
