@@ -11,7 +11,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';

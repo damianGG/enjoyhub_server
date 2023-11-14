@@ -5,7 +5,6 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
-    //@InjectRepository(EmailVerification)
     private userService: UsersService,
     private jwtService: JwtService,
   ) {}
@@ -24,10 +23,9 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByEmail(email);
-    console.log('AuthService.validateUser: user from db:', user);
     if (user && user.password === pass) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
+      const { password: _, ...result } = user;
       return result;
     }
     return null;
@@ -47,5 +45,26 @@ export class AuthService {
     } catch (e) {
       throw new UnauthorizedException();
     }
+  }
+
+  async validateUserFromGoogle(profile: any): Promise<{ accessToken: string }> {
+    const email = profile.email;
+    let user = await this.userService.findOneByEmail(email);
+
+    if (!user) {
+      // Jeśli użytkownik nie istnieje, tworzymy nowego użytkownika
+      user = await this.userService.create({
+        email: profile.email,
+        name: profile.firstName,
+        password: '',
+      });
+    } else {
+      user = await this.userService.update(user.id, {});
+    }
+
+    const payload = { email: user.email, sub: user.id };
+    const accessToken = this.jwtService.sign(payload);
+
+    return { accessToken };
   }
 }

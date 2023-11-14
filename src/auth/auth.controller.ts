@@ -1,6 +1,15 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Redirect,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -22,5 +31,22 @@ export class AuthController {
   verifyToken(@Req() req) {
     const token = req.headers.authorization.split(' ')[1];
     return this.authService.verifyToken(token);
+  }
+  @UseGuards(GoogleAuthGuard)
+  @Get('google')
+  @Redirect()
+  async googleLogin() {
+    // Passport wykona przekierowanie do Google
+  }
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthRedirect(@Req() req, @Res() res: Response) {
+    // Obsługa przekierowania po zalogowaniu przez Google
+    const { accessToken } = await this.authService.validateUserFromGoogle(
+      req.user,
+    );
+    res.redirect(
+      `http://localhost:3001/auth-success?accessToken=${accessToken}`,
+    );
   }
 }

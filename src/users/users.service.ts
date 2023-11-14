@@ -44,12 +44,8 @@ export class UsersService {
     return user;
   }
 
-  async findOneByEmail(email: string): Promise<string> {
-    const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
-    }
-    return user.email;
+  async findOneByEmail(email: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { email } });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -87,5 +83,25 @@ export class UsersService {
       user.emailVerificationToken,
     );
     return await this.userRepository.save(user);
+  }
+
+  async registerViaProvider(
+    createUserDto: CreateUserDto,
+  ): Promise<{ message: string }> {
+    const existingUser = await this.findOneByEmail(createUserDto.email);
+    if (existingUser) {
+      // Zwracamy komunikat, że użytkownik już istnieje
+      return { message: 'User already exists in the database' };
+    }
+
+    // Tworzenie nowego użytkownika i zapisanie go w bazie danych
+    const user = this.userRepository.create({
+      ...createUserDto,
+      // provider: 'google', // przykład dla Google, ustawić odpowiednio dla innego providera
+      // Nie ustawiamy pola 'password', itp.
+    });
+
+    await this.userRepository.save(user);
+    return { message: 'User registered successfully' };
   }
 }

@@ -6,6 +6,7 @@ import { VenueModule } from './venue/venue.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     UsersModule,
     AuthModule,
     CloudinaryModule,
+    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
