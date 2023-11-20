@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   Req,
+  Body,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -28,6 +29,13 @@ export class AppController {
   @Post('auth/login')
   async login(@Request() req) {
     return this.authService.login(req.user);
+  }
+
+  //@UseGuards(LocalAuthGuard)
+  @Post('auth/login-google')
+  async generateToken(@Body() body: { email: string }) {
+    const { email } = body;
+    return this.authService.generateToken(email);
   }
 
   @UseGuards(JwtAuthGuard)

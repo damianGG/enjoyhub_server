@@ -35,7 +35,15 @@ export class AuthService {
     console.log('AuthService.login: user=' + JSON.stringify(user));
     const payload = { email: user.email, sub: user.id };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload), //Zwracamy token po zalogowaniu, tutaj możliwe że będziemy musieli zwrócić jeszcze szereg innych rzeczy
+    };
+  }
+
+  async loginGoogle(user: any): Promise<any> {
+    console.log('AuthService.login: user=' + JSON.stringify(user));
+    const payload = { email: user.email, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload), //Zwracamy token po zalogowaniu, tutaj możliwe że będziemy musieli zwrócić jeszcze szereg innych rzeczy
     };
   }
 
@@ -66,5 +74,17 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };
+  }
+
+  async generateToken(email: string): Promise<string> {
+    // Tutaj możesz dodać logikę, która generuje token JWT tylko na podstawie adresu e-mail
+    const user = await this.userService.findOneByEmail(email);
+
+    if (!user) {
+      throw new Error('Użytkownik o podanym adresie e-mail nie istnieje');
+    }
+
+    const payload = { sub: user.id, email: user.email }; // Dowolne dane, które chcesz umieścić w tokenie
+    return this.jwtService.sign(payload);
   }
 }
