@@ -35,7 +35,9 @@ export class AuthService {
     console.log('AuthService.login: user=' + JSON.stringify(user));
     const payload = { email: user.email, sub: user.id };
     return {
-      access_token: this.jwtService.sign(payload), //Zwracamy token po zalogowaniu, tutaj możliwe że będziemy musieli zwrócić jeszcze szereg innych rzeczy
+      access_token: this.jwtService.sign(payload), // Zwracanie tokena JWT
+      email: user.email, // Zwracanie adresu email użytkownika
+      name: user.name, // Zwracanie nazwy użytkownika //Zwracamy token po zalogowaniu, tutaj możliwe że będziemy musieli zwrócić jeszcze szereg innych rzeczy
     };
   }
 

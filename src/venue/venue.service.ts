@@ -7,26 +7,35 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CreatePhotoDTO } from './dto/create-photo.dto';
 import { Photo } from './entities/photo.entity';
-
+import { Category } from './entities/category.entity';
 @Injectable()
 export class VenueService {
-  venueCategoryRepository: any;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(
     @InjectRepository(Venue)
     private venueRepository: Repository<Venue>,
     @InjectRepository(Photo)
     private photoRepository: Repository<Photo>,
+    @InjectRepository(Category) // dodaj tę linię
+    private venueCategoryRepository: Repository<Category>,
   ) {}
 
   async create(createVenueDto: CreateVenueDto, user: User): Promise<Venue> {
+    const category = await this.venueCategoryRepository.findOne({
+      where: { id: createVenueDto.categoryId },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Category not found`);
+    }
+
     const venue = new Venue();
     venue.name = createVenueDto.name;
     venue.street = createVenueDto.street;
     venue.postalCode = createVenueDto.postalCode;
     venue.country = createVenueDto.country;
     venue.number = createVenueDto.number;
-    // ... ustawianie innych pól ...
+    venue.category = category; // ustawienie kategorii dla nowo powstalego miejsca -- paintball etc
 
     venue.user = user;
 

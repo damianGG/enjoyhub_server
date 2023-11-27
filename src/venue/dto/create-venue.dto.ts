@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  Length,
+  IsOptional,
+  IsNumber,
+} from 'class-validator';
 
 export class CreateVenueDto {
   @IsNotEmpty()
@@ -29,11 +35,15 @@ export class CreateVenueDto {
   @IsOptional()
   userId?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  latitude: number;
+  latitude?: number;
+
+  @IsOptional()
+  @IsString()
+  longitude?: number;
 
   @IsNotEmpty()
-  @IsString()
-  longitude: number;
+  @IsNumber()
+  categoryId: number;
 }

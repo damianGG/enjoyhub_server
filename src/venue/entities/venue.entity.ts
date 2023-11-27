@@ -37,10 +37,10 @@ export class Venue {
   @Column({ default: '12345', type: 'varchar' })
   postalCode: string;
 
-  @Column('double precision')
+  @Column({ default: '48.1079', type: 'double precision' })
   latitude?: number;
 
-  @Column('double precision')
+  @Column({ default: '24.0385', type: 'double precision' })
   longitude?: number;
 
   @ManyToOne(() => User, (user) => user.venues)
