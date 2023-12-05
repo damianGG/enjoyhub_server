@@ -10,6 +10,7 @@ import {
   UploadedFiles,
   Req,
   Body,
+  Delete,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -63,9 +64,22 @@ export class AppController {
   }
   @Post('image/upload')
   @UseInterceptors(FilesInterceptor('files'))
-  uploadImages(@UploadedFiles() files: Express.Multer.File[]) {
+  uploadImages(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('folder') folder: string,
+  ) {
     return Promise.all(
-      files.map((file) => this.cloudinaryService.uploadFile(file)),
+      files.map((file) => this.cloudinaryService.uploadFile(file, folder)),
     );
+  }
+
+  @Get('images/:folder')
+  async getImages(@Param('folder') folder: string) {
+    return this.cloudinaryService.getImagesFromFolder(folder);
+  }
+
+  @Delete('images/:publicId')
+  async deleteImage(@Param('publicId') publicId: string) {
+    return this.cloudinaryService.deleteImage(publicId);
   }
 }
