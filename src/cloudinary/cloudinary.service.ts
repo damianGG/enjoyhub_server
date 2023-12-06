@@ -27,6 +27,7 @@ export class CloudinaryService {
 
     const photo = new Photo();
     photo.url = result.secure_url;
+    photo.venueId = parseInt(folder);
 
     await this.photoRepository.save(photo);
 
@@ -45,8 +46,19 @@ export class CloudinaryService {
 
   async deleteImage(publicId: string): Promise<any> {
     try {
-      const result = await cloudinary.api.delete_resources([`${publicId}`]);
-      return result; // Zwraca wynik operacji usunięcia
+      // Usuwanie obrazu z Cloudinary
+      const cloudinaryResult = await cloudinary.uploader.destroy(publicId);
+
+      // Usuwanie obrazu z bazy danych
+      const deleteResult = await this.photoRepository.delete({
+        url: cloudinaryResult.secure_url,
+      });
+
+      // Zwracanie wyników operacji
+      return {
+        cloudinary: cloudinaryResult,
+        database: deleteResult,
+      };
     } catch (error) {
       throw new Error('Error deleting image: ' + error.message);
     }

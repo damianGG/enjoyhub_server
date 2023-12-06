@@ -15,6 +15,9 @@ export class Photo {
   @Column()
   url: string;
 
+  @Column() // Dodaj to
+  venueId: number;
+
   @ManyToOne(() => Venue, (venue) => venue.photos)
   @JoinColumn({ name: 'venueId' })
   venue: Venue;

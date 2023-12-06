@@ -11,6 +11,9 @@ import {
   Req,
   Body,
   Delete,
+  Query,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -64,22 +67,41 @@ export class AppController {
   }
   @Post('image/upload')
   @UseInterceptors(FilesInterceptor('files'))
-  uploadImages(
+  async uploadImages(
     @UploadedFiles() files: Express.Multer.File[],
     @Body('folder') folder: string,
   ) {
-    return Promise.all(
-      files.map((file) => this.cloudinaryService.uploadFile(file, folder)),
-    );
+    try {
+      const uploadResults = await Promise.all(
+        files.map((file) => this.cloudinaryService.uploadFile(file, folder)),
+      );
+      // Zwróć odpowiedź po pomyślnym uploadzie wszystkich plików
+      return {
+        success: true,
+        message: 'Images uploaded successfully',
+        data: uploadResults, // Opcjonalnie, zwróć wyniki uploadu
+      };
+    } catch (error) {
+      // Obsłuż błędy, np. problem z uploadem
+      throw new HttpException(
+        {
+          success: false,
+          message: 'Error uploading images',
+          error: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete('images')
+  async deleteImg(@Query('publicId') publicId: string) {
+    console.log('tutaj');
+    return this.cloudinaryService.deleteImage(publicId);
   }
 
   @Get('images/:folder')
   async getImages(@Param('folder') folder: string) {
     return this.cloudinaryService.getImagesFromFolder(folder);
-  }
-
-  @Delete('images/:publicId')
-  async deleteImage(@Param('publicId') publicId: string) {
-    return this.cloudinaryService.deleteImage(publicId);
   }
 }
