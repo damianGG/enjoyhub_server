@@ -50,10 +50,17 @@ export class CloudinaryService {
       const cloudinaryResult = await cloudinary.uploader.destroy(publicId);
 
       // Usuwanie obrazu z bazy danych
-      const deleteResult = await this.photoRepository.delete({
-        url: cloudinaryResult.secure_url,
-      });
+      const deleteResult = await this.photoRepository
+        .createQueryBuilder()
+        .delete()
+        .from(Photo)
+        .where('url LIKE :publicId', {
+          publicId: `%${publicId}%`,
+        })
+        .execute();
 
+      console.log(cloudinaryResult);
+      console.log(deleteResult);
       // Zwracanie wyników operacji
       return {
         cloudinary: cloudinaryResult,
