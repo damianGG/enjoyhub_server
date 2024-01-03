@@ -38,6 +38,7 @@ export class AuthService {
       access_token: this.jwtService.sign(payload), // Zwracanie tokena JWT
       email: user.email, // Zwracanie adresu email użytkownika
       name: user.name, // Zwracanie nazwy użytkownika //Zwracamy token po zalogowaniu, tutaj możliwe że będziemy musieli zwrócić jeszcze szereg innych rzeczy
+      userId: user.id, // Zwracanie
     };
   }
 

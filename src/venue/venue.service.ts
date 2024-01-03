@@ -14,9 +14,11 @@ export class VenueService {
   constructor(
     @InjectRepository(Venue)
     private venueRepository: Repository<Venue>,
+    // @InjectRepository(User)
+    // private userRepository: Repository<User>,
     @InjectRepository(Photo)
     private photoRepository: Repository<Photo>,
-    @InjectRepository(Category) // dodaj tę linię
+    @InjectRepository(Category)
     private venueCategoryRepository: Repository<Category>,
   ) {}
 
@@ -95,6 +97,20 @@ export class VenueService {
     return await this.photoRepository
       .createQueryBuilder('photo')
       .where('photo.venueId = :venueId', { venueId })
+      .getMany();
+  }
+  async getVenuesByUserID(userId: string) {
+    return await this.venueRepository
+      .createQueryBuilder('venue')
+      .leftJoinAndSelect('venue.user', 'user')
+      .where('user.id = :userId', { userId })
+      .getMany();
+  }
+  async getVenuesByUserEmail(email: string) {
+    return await this.venueRepository
+      .createQueryBuilder('venue')
+      .leftJoinAndSelect('venue.user', 'user')
+      .where('user.email = :email', { email })
       .getMany();
   }
 }

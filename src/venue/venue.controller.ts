@@ -47,6 +47,15 @@ export class VenueController {
     return this.venueService.getPhotosByVenue(id);
   }
 
+  @Get(':id/venues')
+  getVenueByUserId(@Param('id') id: string) {
+    return this.venueService.getVenuesByUserID(id);
+  }
+  @Get(':email/venues')
+  getVenueByUserEmail(@Param('email') email: string) {
+    return this.venueService.getVenuesByUserEmail(email);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.venueService.remove(id);
