@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Category } from './category.entity';
 import { Photo } from './photo.entity';
+import { Expose } from 'class-transformer';
 
 @Entity()
 export class Venue {
@@ -48,6 +49,11 @@ export class Venue {
 
   @ManyToOne(() => Category, (category) => category.venue)
   category: Category;
+
+  @Expose()
+  get categoryName(): string {
+    return this.category.name;
+  }
 
   @OneToMany(() => Photo, (photo) => photo.venue)
   photos: Photo[];

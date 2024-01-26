@@ -42,6 +42,12 @@ export class VenueController {
   findOne(@Param('id') id: number) {
     return this.venueService.findOne(id);
   }
+
+  @Post(':id')
+  update(@Param('id') id: number, @Body() updateData: any) {
+    return this.venueService.update(id, updateData);
+  }
+
   @Get(':id/photos')
   getPhotosByVenue(@Param('id') id: string) {
     return this.venueService.getPhotosByVenue(id);

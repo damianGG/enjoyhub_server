@@ -8,6 +8,7 @@ import { User } from 'src/users/entities/user.entity';
 import { CreatePhotoDTO } from './dto/create-photo.dto';
 import { Photo } from './entities/photo.entity';
 import { Category } from './entities/category.entity';
+import { UpdateVenueDto } from './dto/update-venue.dto';
 @Injectable()
 export class VenueService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -46,6 +47,16 @@ export class VenueService {
     return venue;
   }
 
+  async update(id: number, updateVenueDto: UpdateVenueDto): Promise<Venue> {
+    const venue = await this.findOne(id);
+
+    // Aktualizuj właściwości miejsca
+    Object.assign(venue, updateVenueDto);
+
+    await this.venueRepository.save(venue);
+    return venue;
+  }
+
   async findAll(): Promise<Venue[]> {
     return await this.venueRepository.find();
   }
@@ -64,12 +75,19 @@ export class VenueService {
   }
 
   async findByCategorySlug(slug: string) {
-    return this.venueRepository
+    const queryBuilder = this.venueRepository
       .createQueryBuilder('venue')
-      .innerJoin('venue.category', 'category')
+      .innerJoinAndSelect('venue.category', 'category') // Zmieniono na innerJoinAndSelect
       .leftJoinAndSelect('venue.photos', 'photo')
-      .where('category.slug = :slug', { slug })
-      .getMany();
+      .addSelect('category.name', 'category_name') // Doprecyzowane addSelect
+      .where('category.slug = :slug', { slug });
+
+    //const sql = queryBuilder.getSql();
+    //console.log(sql); // Powinno teraz działać poprawnie
+
+    const results = await queryBuilder.getMany();
+    //console.log(JSON.stringify(results, null, 2));
+    return results;
   }
 
   async findByIdInSlug(slug: string): Promise<Venue> {
