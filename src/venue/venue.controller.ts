@@ -25,6 +25,10 @@ export class VenueController {
     const userId = user.id;
     return this.venueService.create(createVenueDto, userId);
   }
+  @Get('/all')
+  async findAllWithPhotos(): Promise<Venue[]> {
+    return this.venueService.findAllVenuesWithPhotos();
+  }
 
   @Get()
   findAll() {

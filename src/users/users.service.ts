@@ -11,12 +11,14 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { MailService } from 'src/mail/mail.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private jwtService: JwtService,
     private readonly mailService: MailService,
   ) {}
 
@@ -85,23 +87,36 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async registerViaProvider(
-    createUserDto: CreateUserDto,
-  ): Promise<{ message: string }> {
+  async registerViaProvider(createUserDto: CreateUserDto): Promise<any> {
     const existingUser = await this.findOneByEmail(createUserDto.email);
     if (existingUser) {
-      // Zwracamy komunikat, że użytkownik już istnieje
-      return { message: 'User already exists in the database' };
+      // Jeśli użytkownik już istnieje, możesz zdecydować, czy zwrócić istniejący token JWT,
+      // czy też po prostu zwrócić komunikat, że użytkownik już istnieje.
+      // Na przykład, możesz wygenerować nowy token JWT dla istniejącego użytkownika:
+      const payload = { email: existingUser.email, sub: existingUser.id };
+      return {
+        access_token: this.jwtService.sign(payload),
+        email: existingUser.email,
+        name: existingUser.name,
+        userId: existingUser.id,
+      };
     }
 
     // Tworzenie nowego użytkownika i zapisanie go w bazie danych
     const user = this.userRepository.create({
       ...createUserDto,
-      // provider: 'google', // przykład dla Google, ustawić odpowiednio dla innego providera
-      // Nie ustawiamy pola 'password', itp.
+      // Dodatkowe ustawienia dla użytkownika, jeśli są potrzebne
     });
 
     await this.userRepository.save(user);
-    return { message: 'User registered successfully' };
+
+    // Generowanie tokena JWT dla nowego użytkownika
+    const payload = { email: user.email, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+      email: user.email,
+      name: user.name,
+      userId: user.id,
+    };
   }
 }

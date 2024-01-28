@@ -90,6 +90,18 @@ export class VenueService {
     return results;
   }
 
+  async findAllVenuesWithPhotos() {
+    const queryBuilder = this.venueRepository
+      .createQueryBuilder('venue')
+      .innerJoinAndSelect('venue.category', 'category') // Zmieniono na innerJoinAndSelect
+      .leftJoinAndSelect('venue.photos', 'photo')
+      .addSelect('category.name', 'category_name'); // Doprecyzowane addSelect
+
+    const results = await queryBuilder.getMany();
+    //console.log(JSON.stringify(results, null, 2));
+    return results;
+  }
+
   async findByIdInSlug(slug: string): Promise<Venue> {
     const id = parseInt(slug.split('-')[0]);
     const venue = await this.venueRepository.findOne({ where: { id } });
