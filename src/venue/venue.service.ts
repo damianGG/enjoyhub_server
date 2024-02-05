@@ -77,25 +77,23 @@ export class VenueService {
   async findByCategorySlug(slug: string) {
     const queryBuilder = this.venueRepository
       .createQueryBuilder('venue')
-      .innerJoinAndSelect('venue.category', 'category') // Zmieniono na innerJoinAndSelect
+      .innerJoinAndSelect('venue.category', 'category')
       .leftJoinAndSelect('venue.photos', 'photo')
-      .addSelect('category.name', 'category_name') // Doprecyzowane addSelect
-      .where('category.slug = :slug', { slug });
-
-    //const sql = queryBuilder.getSql();
-    //console.log(sql); // Powinno teraz działać poprawnie
+      .where('category.slug = :slug', { slug })
+      .andWhere('photo.id IS NOT NULL'); // Dodajemy warunek, że id zdjęcia nie może być NULL
 
     const results = await queryBuilder.getMany();
-    //console.log(JSON.stringify(results, null, 2));
     return results;
+    // return results.filter((venue) => venue.photos.length > 0); // Dodatkowe filtrowanie na poziomie aplikacji, jeśli potrzebne
   }
 
   async findAllVenuesWithPhotos() {
     const queryBuilder = this.venueRepository
       .createQueryBuilder('venue')
-      .innerJoinAndSelect('venue.category', 'category') // Zmieniono na innerJoinAndSelect
+      .innerJoinAndSelect('venue.category', 'category')
       .leftJoinAndSelect('venue.photos', 'photo')
-      .addSelect('category.name', 'category_name'); // Doprecyzowane addSelect
+      .where('photo.id IS NOT NULL') // Dodajemy warunek, że venue musi mieć przynajmniej jedno zdjęcie
+      .addSelect('category.name', 'category_name');
 
     const results = await queryBuilder.getMany();
     //console.log(JSON.stringify(results, null, 2));
