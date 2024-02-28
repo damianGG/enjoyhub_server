@@ -44,7 +44,7 @@ export class VenueController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.venueService.findOne(id);
+    return this.venueService.findOneWithVenue(id);
   }
 
   @Post(':id')

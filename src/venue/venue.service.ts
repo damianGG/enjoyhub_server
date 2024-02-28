@@ -69,6 +69,21 @@ export class VenueService {
     return venue;
   }
 
+  async findOneWithVenue(id: number) {
+    const queryBuilder = this.venueRepository
+      .createQueryBuilder('venue')
+      .innerJoinAndSelect('venue.category', 'category')
+      .leftJoinAndSelect('venue.photos', 'photo')
+      .where('venue.id = :id', { id });
+
+    const results = await queryBuilder.getMany();
+    //const venue = await this.venueRepository.findOne({ where: { id } });
+    if (!results) {
+      throw new NotFoundException(`Venue with ID ${id} not found`);
+    }
+    return results;
+  }
+
   async remove(id: number): Promise<void> {
     const venue = await this.findOne(id); // this will throw an error if the venue is not found
     await this.venueRepository.remove(venue);

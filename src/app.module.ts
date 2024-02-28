@@ -11,14 +11,25 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
+      // type: 'mysql',
+      // host: 'localhost', // replace with your DB host
+      // port: 3306, // replace with your DB port
+      // username: 'root', // replace with your DB username
+      // password: 'test', // replace with your DB password
+      // database: 'sys',
+      // entities: ['dist/**/*.entity{.ts,.js}'],
+      // synchronize: true,
       type: 'mysql',
-      host: 'localhost', // replace with your DB host
+      host: process.env.DATABASE_HOST, // replace with your DB host
       port: 3306, // replace with your DB port
-      username: 'root', // replace with your DB username
-      password: 'test', // replace with your DB password
-      database: 'sys',
+      username: process.env.DATABASE_USERNAME, // replace with your DB username
+      password: process.env.DATABASE_PASSWORD, // replace with your DB password
+      database: process.env.DATABASE_NAME,
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
+      ssl: {
+        rejectUnauthorized: true,
+      },
     }),
     VenueModule,
     UsersModule,
