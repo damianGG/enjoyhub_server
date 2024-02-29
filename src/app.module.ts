@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       // type: 'mysql',
       // host: 'localhost', // replace with your DB host
@@ -28,14 +29,13 @@ import { ConfigModule } from '@nestjs/config';
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
       ssl: {
-        rejectUnauthorized: true,
+        rejectUnauthorized: false,
       },
     }),
     VenueModule,
     UsersModule,
     AuthModule,
     CloudinaryModule,
-    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
