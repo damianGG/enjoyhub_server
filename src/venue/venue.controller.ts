@@ -7,11 +7,11 @@ import {
   Param,
   Delete,
   Request,
-  //UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { VenueService } from './venue.service';
 import { CreateVenueDto } from './dto/create-venue.dto';
-//import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Venue } from './entities/venue.entity';
 
 @Controller('venue')
@@ -19,7 +19,7 @@ export class VenueController {
   constructor(private readonly venueService: VenueService) {}
 
   @Post()
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   create(@Request() req, @Body() createVenueDto: CreateVenueDto) {
     const user = req.user; // teraz masz dostęp do danych użytkownika
     const userId = user.id;
