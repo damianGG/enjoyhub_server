@@ -20,7 +20,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { CloudinaryService } from './cloudinary/cloudinary.service'; 
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 @Controller()
 export class AppController {
