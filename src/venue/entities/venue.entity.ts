@@ -68,13 +68,13 @@ export class Venue {
   @Column({ default: '', type: 'varchar' })
   user_ratings_total: string;
 
-  @Column({ default: '', type: 'text' })
+  @Column({ type: 'text' })
   description_1: string;
 
-  @Column({ default: '', type: 'text' })
+  @Column({ type: 'text' })
   description_2: string;
 
-  @Column({ default: '', type: 'text' })
+  @Column({ type: 'text' })
   description_3: string;
 
   @Column({ default: '', type: 'double precision' })
