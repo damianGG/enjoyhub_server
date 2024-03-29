@@ -31,14 +31,24 @@ export class VenueService {
     if (!category) {
       throw new NotFoundException(`Category not found`);
     }
-
     const venue = new Venue();
+    venue.status = createVenueDto.status;
     venue.name = createVenueDto.name;
-    venue.street = createVenueDto.street;
-    venue.postalCode = createVenueDto.postalCode;
     venue.country = createVenueDto.country;
-    venue.number = createVenueDto.number;
-    venue.category = category; // ustawienie kategorii dla nowo powstalego miejsca -- paintball etc
+    venue.postalCode = createVenueDto.postalCode;
+    venue.city = createVenueDto.city;
+    venue.street = createVenueDto.street;
+    venue.street_number = createVenueDto.street_number;
+    venue.phone_number_1 = createVenueDto.phone_number_1;
+    venue.phone_number_2 = createVenueDto.phone_number_2;
+    venue.webiste = createVenueDto.webiste;
+    venue.email = createVenueDto.email;
+    venue.facebook = createVenueDto.facebook;
+    venue.instagram = createVenueDto.instagram;
+    venue.tiktok = createVenueDto.tiktok;
+    venue.latitude = createVenueDto.latitude;
+    venue.longitude = createVenueDto.longitude;
+    venue.category = category;
 
     venue.user = user;
 

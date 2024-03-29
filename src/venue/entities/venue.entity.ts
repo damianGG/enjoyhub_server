@@ -20,28 +20,67 @@ export class Venue {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Column({ default: 'Open' })
+  status: string;
+
   @Column({ default: 'Default Venue Name' })
   name: string;
+
+  @Column({ default: 'Poland', type: 'varchar', length: 255 })
+  country: string;
+
+  @Column({ default: '0000', type: 'varchar' })
+  postalCode: string;
 
   @Column({ default: 'Default Venue Name', type: 'varchar', length: 255 })
   city: string;
 
   @Column({ default: 'Default Venue Name', type: 'varchar', length: 255 })
-  country: string;
-
-  @Column({ default: 'Default Venue Name', type: 'varchar', length: 255 })
   street: string;
 
   @Column({ default: '1', type: 'varchar' })
-  number: string;
+  street_number: string;
 
-  @Column({ default: '12345', type: 'varchar' })
-  postalCode: string;
+  @Column({ default: '', type: 'varchar' })
+  phone_number_1: string;
 
-  @Column({ default: '48.1079', type: 'double precision' })
+  @Column({ default: '', type: 'varchar' })
+  phone_number_2: string;
+
+  @Column({ default: '', type: 'varchar' })
+  webiste: string;
+
+  @Column({ default: '', type: 'varchar' })
+  email: string;
+
+  @Column({ default: '', type: 'varchar' })
+  facebook: string;
+
+  @Column({ default: '', type: 'varchar' })
+  instagram: string;
+
+  @Column({ default: '', type: 'varchar' })
+  tiktok: string;
+
+  @Column({ default: '5', type: 'varchar' })
+  rating: string;
+
+  @Column({ default: '', type: 'varchar' })
+  user_ratings_total: string;
+
+  @Column({ default: '', type: 'text' })
+  description_1: string;
+
+  @Column({ default: '', type: 'text' })
+  description_2: string;
+
+  @Column({ default: '', type: 'text' })
+  description_3: string;
+
+  @Column({ default: '', type: 'double precision' })
   latitude?: number;
 
-  @Column({ default: '24.0385', type: 'double precision' })
+  @Column({ default: '', type: 'double precision' })
   longitude?: number;
 
   @ManyToOne(() => User, (user) => user.venues)
