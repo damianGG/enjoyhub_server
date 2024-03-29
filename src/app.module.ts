@@ -22,7 +22,7 @@ import { ConfigModule } from '@nestjs/config';
       // synchronize: true,
       type: 'mysql',
       host: process.env.DATABASE_HOST, // replace with your DB host
-      port: 30065, // replace with your DB port
+      port: parseInt(process.env.DATABASE_PORT), // replace with your DB port
       username: process.env.DATABASE_USERNAME, // replace with your DB username
       password: process.env.DATABASE_PASSWORD, // replace with your DB password
       database: process.env.DATABASE_NAME,
