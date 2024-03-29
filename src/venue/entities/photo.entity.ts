@@ -12,7 +12,7 @@ export class Photo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column('text')
   url: string;
 
   @Column() // Dodaj to
