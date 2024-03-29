@@ -13,6 +13,7 @@ import { VenueService } from './venue.service';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Venue } from './entities/venue.entity';
+import { CreatePhotoDTO } from './dto/create-photo.dto';
 
 @Controller('venue')
 export class VenueController {
@@ -40,6 +41,12 @@ export class VenueController {
     @Param('categorySlug') categorySlug: string,
   ): Promise<Venue[]> {
     return this.venueService.findByCategorySlug(categorySlug);
+  }
+
+  @Post('/add-photo')
+  @UseGuards(JwtAuthGuard) // Jeśli chcesz zabezpieczyć ten endpoint JWT
+  addPhoto(@Body() createPhotoDTO: CreatePhotoDTO) {
+    return this.venueService.addPhoto(createPhotoDTO);
   }
 
   @Get(':id')
