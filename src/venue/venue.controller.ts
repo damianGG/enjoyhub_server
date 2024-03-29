@@ -44,7 +44,6 @@ export class VenueController {
   }
 
   @Post('/add-photo')
-  @UseGuards(JwtAuthGuard) // Jeśli chcesz zabezpieczyć ten endpoint JWT
   addPhoto(@Body() createPhotoDTO: CreatePhotoDTO) {
     return this.venueService.addPhoto(createPhotoDTO);
   }
